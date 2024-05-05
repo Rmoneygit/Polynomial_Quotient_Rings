@@ -34,13 +34,25 @@ int main()
             {
                 substr += *it;
                 ++it;
+
+                if (it == inputtedModulus.end())
+                {
+                    float coeff = std::stof(substr);
+                    coefficients.push_back(coeff);
+                }
+
             }
         }
+
+        if (it == inputtedModulus.end())
+            break;
     }
 
     // I want to enter the coefficients in the same order that they'd be written on paper, but ultimately store them reversed.
     std::reverse(coefficients.begin(), coefficients.end());
     Polynomial mod(coefficients);
+
+    std::cout << mod.ToString();
 
     return 0;
 }

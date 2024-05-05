@@ -22,6 +22,9 @@ Polynomial::Polynomial(const std::vector<float>& values)
 	{
 		coefficients.push_back(val);
 	}
+
+	if (values.empty())
+		coefficients.push_back(0);
 }
 
 Polynomial::~Polynomial()
@@ -187,7 +190,7 @@ bool Polynomial::operator!=(Polynomial right)
 
 int Polynomial::GetDegree()
 {
-	return coefficients.size();
+	return coefficients.size() - 1;
 }
 
 std::string Polynomial::ToString()
@@ -201,4 +204,6 @@ std::string Polynomial::ToString()
 		if (i != 0)
 			displayStr += " + ";
 	}
+
+	return displayStr;
 }
