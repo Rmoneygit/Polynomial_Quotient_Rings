@@ -4,6 +4,7 @@
 // Purpose: Class which represents a polynomial
 
 #pragma once
+#include <string>
 #include <vector>
 
 class Polynomial
@@ -23,7 +24,9 @@ class Polynomial
 		bool operator==(Polynomial ref);
 		bool operator!=(Polynomial ref);
 
-		int getDegree();
+		int GetDegree();
+
+		std::string ToString();
 	private:
 		// Coefficient are stored backwards from how they are written on paper. For instance
 		// 

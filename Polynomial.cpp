@@ -33,9 +33,9 @@ Polynomial Polynomial::operator+(Polynomial right)
 {
 	std::vector<float> newCoefficients;
 
-	int higherDegree = getDegree();
-	if (right.getDegree() > higherDegree)
-		higherDegree = right.getDegree();
+	int higherDegree = GetDegree();
+	if (right.GetDegree() > higherDegree)
+		higherDegree = right.GetDegree();
 
 	// Add corresponding coefficients.
 	for (int i = 0; i < higherDegree; i++)
@@ -43,10 +43,10 @@ Polynomial Polynomial::operator+(Polynomial right)
 		int leftCoefficent = 0;
 		int rightCoefficient = 0;
 
-		if (i < getDegree())
+		if (i < GetDegree())
 			leftCoefficent = coefficients[i];
 
-		if (i < right.getDegree())
+		if (i < right.GetDegree())
 			rightCoefficient = right.coefficients[i];
 
 		newCoefficients.push_back(leftCoefficent + rightCoefficient);
@@ -67,7 +67,7 @@ Polynomial Polynomial::operator-()
 {
 	std::vector<float> newCoefficients;
 
-	for (int i = 0; i < getDegree(); i++)
+	for (int i = 0; i < GetDegree(); i++)
 	{
 		newCoefficients.push_back(-coefficients[i]);
 	}
@@ -84,7 +84,7 @@ Polynomial Polynomial::operator*(Polynomial right)
 {
 	std::vector<float> newCoefficients;
 
-	int maximumNewDegree = getDegree() + right.getDegree();
+	int maximumNewDegree = GetDegree() + right.GetDegree();
 
 	// Formula for the nth coefficient of the product of two arbitrary polynomials:
 	// c_n = a_0*b_n + a_1*b_(n-1) a_2*b_(n-2) + a_3*b_(n-3) + ... + a_(n-1)b_1 + a_n*b_0
@@ -97,10 +97,10 @@ Polynomial Polynomial::operator*(Polynomial right)
 			int leftCoefficent = 0;
 			int rightCoefficient = 0;
 
-			if (i < getDegree())
+			if (i < GetDegree())
 				leftCoefficent = coefficients[i];
 
-			if (i < right.getDegree())
+			if (i < right.GetDegree())
 				rightCoefficient = right.coefficients[j];
 			
 			ithCoeff += leftCoefficent * rightCoefficient;
@@ -129,7 +129,7 @@ Polynomial Polynomial::operator/(Polynomial divisor)
 	Polynomial quotient(0);
 	Polynomial remainder(*this); // At each step, n = d * q + r
 
-	while (remainder != Polynomial(0) && remainder.getDegree() >= divisor.getDegree())
+	while (remainder != Polynomial(0) && remainder.GetDegree() >= divisor.GetDegree())
 	{
 		Polynomial temp = Polynomial(remainder.coefficients[0] / divisor.coefficients[0]);
 		quotient = quotient + temp;
@@ -154,7 +154,7 @@ Polynomial Polynomial::operator%(Polynomial mod)
 	Polynomial quotient(0);
 	Polynomial remainder(*this); // At each step, n = d * q + r
 
-	while (remainder != Polynomial(0) && remainder.getDegree() >= mod.getDegree())
+	while (remainder != Polynomial(0) && remainder.GetDegree() >= mod.GetDegree())
 	{
 		Polynomial temp = Polynomial(remainder.coefficients[0] / mod.coefficients[0]);
 		quotient = quotient + temp;
@@ -168,10 +168,10 @@ Polynomial Polynomial::operator%(Polynomial mod)
 // Two polynomials are equal if every corresponding coefficient is equal.
 bool Polynomial::operator==(Polynomial right)
 {
-	if (getDegree() != right.getDegree())
+	if (GetDegree() != right.GetDegree())
 		return false;
 
-	for (int i = 0; i < getDegree(); i++)
+	for (int i = 0; i < GetDegree(); i++)
 	{
 		if (coefficients[i] != right.coefficients[i])
 			return false;
@@ -185,7 +185,20 @@ bool Polynomial::operator!=(Polynomial right)
 	return !(this->operator==(right));
 }
 
-int Polynomial::getDegree()
+int Polynomial::GetDegree()
 {
 	return coefficients.size();
+}
+
+std::string Polynomial::ToString()
+{
+	std::string displayStr;
+
+	for (int i = GetDegree(); i >= 0; i--)
+	{
+		displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
+
+		if (i != 0)
+			displayStr += " + ";
+	}
 }
