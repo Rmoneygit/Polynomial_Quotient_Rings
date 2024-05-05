@@ -11,41 +11,39 @@
 #include "Polynomial.h"
 #include <vector>
 
+const std::string digits = "0123456789";
+bool isDigit(char c);
+
 int main()
 {
     std::string inputtedModulus;
     std::cout << "Enter a polynomial modulus. Type it like this: \"3 0 2 3 0\" represents the polynomial 3x^4 + 2x^2 + 3x.\n";
-    std::cin >> inputtedModulus;
+    std::getline(std::cin, inputtedModulus);
 
+    // The goal here is to parse a string which is a list of floats seperated by spaces.
     std::vector<float> coefficients;
-    for (std::string::iterator it = inputtedModulus.begin(); it != inputtedModulus.end(); ++it)
+    for (int i = 0; i < inputtedModulus.size(); i++)
     {
         std::string substr;
 
-        while (it != inputtedModulus.end())
+        while (i < inputtedModulus.size())
         {
-            if (*it == ' ')
+            if (inputtedModulus[i] == ' ')
             {
-                float coeff = std::stof(substr);
-                coefficients.push_back(coeff);
                 break;
             }
-            else
+            else if(isDigit(inputtedModulus[i]) || inputtedModulus[i] == '.')
             {
-                substr += *it;
-                ++it;
-
-                if (it == inputtedModulus.end())
-                {
-                    float coeff = std::stof(substr);
-                    coefficients.push_back(coeff);
-                }
-
+                substr += inputtedModulus[i];
+                ++i;
             }
         }
 
-        if (it == inputtedModulus.end())
-            break;
+        if (!substr.empty())
+        {
+            float coeff = std::stof(substr);
+            coefficients.push_back(coeff);
+        }
     }
 
     // I want to enter the coefficients in the same order that they'd be written on paper, but ultimately store them reversed.
@@ -55,4 +53,15 @@ int main()
     std::cout << mod.ToString();
 
     return 0;
+}
+
+bool isDigit(char c)
+{
+    for (int i = 0; i < digits.size(); i++)
+    {
+        if (c == digits[i])
+            return true;
+    }
+
+    return false;
 }

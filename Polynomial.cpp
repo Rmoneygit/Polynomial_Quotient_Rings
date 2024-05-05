@@ -199,6 +199,11 @@ std::string Polynomial::ToString()
 
 	for (int i = GetDegree(); i >= 0; i--)
 	{
+		if (i == 0)
+			displayStr += std::to_string(coefficients[i]);
+		else if (i == 1)
+			displayStr += std::to_string(coefficients[i]) + "x";
+		else
 		displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
 
 		if (i != 0)
