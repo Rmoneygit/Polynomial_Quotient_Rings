@@ -3,8 +3,11 @@
 // Timestamp: <30-Mar-2024> 22:21:34 PDT
 // Purpose: Class which represents a polynomial
 
-#include "Polynomial.h"
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
+
+#include "Polynomial.h"
 
 Polynomial::Polynomial()
 {
@@ -195,20 +198,27 @@ int Polynomial::GetDegree()
 
 std::string Polynomial::ToString()
 {
-	std::string displayStr;
+	std::stringstream stream;
 
 	for (int i = GetDegree(); i >= 0; i--)
 	{
-		if (i == 0)
-			displayStr += std::to_string(coefficients[i]);
-		else if (i == 1)
-			displayStr += std::to_string(coefficients[i]) + "x";
-		else
-		displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
+		if (coefficients[i] == 0)
+			continue;
 
-		if (i != 0)
-			displayStr += " + ";
+		if(i != GetDegree())
+			stream << " + ";
+
+		if (i == 0)
+		{	
+			stream << std::fixed << std::setprecision(2) << coefficients[i];
+		}
+		else if (i == 1)
+		{
+			stream << std::fixed << std::setprecision(2) << coefficients[i] << "x";
+		}
+		else
+			stream << std::fixed << std::setprecision(2) << coefficients[i] << "x^" << i;
 	}
 
-	return displayStr;
+	return stream.str();
 }
