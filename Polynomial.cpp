@@ -187,9 +187,53 @@ bool Polynomial::operator==(const Polynomial& right) const
 	return true;
 }
 
-bool Polynomial::operator!=(Polynomial right) const
+bool Polynomial::operator!=(const Polynomial& right) const
 {
 	return !(this->operator==(right));
+}
+
+// Define an ordering on Polynomials. If p(x) has higher degree than q(x), then we say it's greater.
+// If they have the same degree, then start from the coefficient of the highest degree term, and compare corresponding values. 
+bool Polynomial::operator>(const Polynomial& right) const
+{
+	if (GetDegree() > right.GetDegree())
+		return true;
+	
+	if (GetDegree() < right.GetDegree())
+		return false;
+
+	for (int i = GetDegree(); i >= 0; i--)
+	{
+		if (coefficients[i] > right.coefficients[i])
+			return true;
+		
+		if (coefficients[i] < right.coefficients[i])
+			return false;
+	}
+
+	// Only happens if they're equal
+	return false;
+}
+
+bool Polynomial::operator<(const Polynomial& right) const
+{
+	if (GetDegree() > right.GetDegree())
+		return false;
+
+	if (GetDegree() < right.GetDegree())
+		return true;
+
+	for (int i = GetDegree(); i >= 0; i--)
+	{
+		if (coefficients[i] > right.coefficients[i])
+			return false;
+
+		if (coefficients[i] < right.coefficients[i])
+			return true;
+	}
+
+	// Only happens if they're equal
+	return false;
 }
 
 int Polynomial::GetDegree() const
@@ -204,13 +248,13 @@ std::string Polynomial::ToString() const
 	for (int i = GetDegree(); i >= 0; i--)
 	{
 		float coeff = coefficients[i];
-		int precision = 2;
+		int precision = 4;
 		
 		if (coeff == 0 && GetDegree() != 0)
 			continue;
 
 		// If the coefficient is close enough to being an integer, don't show any decimal points
-		if (std::abs(roundf(coeff) - coeff) < EPSILON)
+		if (std::abs(roundf(coeff) - coeff) < 0.00001)
 			precision = 0;
 
 		if(i != GetDegree())

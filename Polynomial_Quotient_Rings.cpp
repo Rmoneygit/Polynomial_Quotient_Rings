@@ -7,14 +7,13 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <map>
 #include "Polynomial.h"
 #include <vector>
-#include <unordered_set>
+#include <set>
 
 const std::string digits = "0123456789";
 bool isDigit(char c);
-void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, float minCoeff, float maxCoeff);
+void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff);
 
 int main()
 {
@@ -53,7 +52,7 @@ int main()
     std::reverse(coefficients.begin(), coefficients.end());
     Polynomial mod(coefficients);
 
-    std::unordered_set<Polynomial, PolynomialHash> polynomials;
+    std::set<Polynomial> polynomials;
     generatePolynomialSet(mod.GetDegree(), polynomials, 0, 2);
 
     for (Polynomial p : polynomials)
@@ -75,7 +74,7 @@ bool isDigit(char c)
     return false;
 }
 
-void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, float minCoeff, float maxCoeff)
+void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff)
 {
     if (degree == 0)
     {
@@ -87,7 +86,7 @@ void generatePolynomialSet(int degree, std::unordered_set<Polynomial, Polynomial
         return;
     }
 
-    std::unordered_set<Polynomial, PolynomialHash> lowerDegreePolynomials;
+    std::set<Polynomial> lowerDegreePolynomials;
     generatePolynomialSet(degree - 1, lowerDegreePolynomials, minCoeff, maxCoeff);
 
     for (int i = minCoeff; i <= maxCoeff; ++i)
