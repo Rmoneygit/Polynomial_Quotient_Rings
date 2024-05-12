@@ -5,8 +5,11 @@
 
 #include <iomanip>
 #include <stdexcept>
+#include <stdlib.h>
 
 #include "Polynomial.h"
+
+#define EPSILON std::numeric_limits<float>::epsilon()
 
 Polynomial::Polynomial()
 {
@@ -18,7 +21,7 @@ Polynomial::Polynomial(int a)
 	coefficients.push_back(a);
 }
 
-Polynomial::Polynomial(const std::vector<int>& values)
+Polynomial::Polynomial(const std::vector<float>& values)
 {
 	for (int val : values)
 	{
@@ -36,7 +39,7 @@ Polynomial::~Polynomial()
 
 Polynomial Polynomial::operator+(const Polynomial& right) const
 {
-	std::vector<int> newCoefficients;
+	std::vector<float> newCoefficients;
 
 	int higherDegree = GetDegree();
 	if (right.GetDegree() > higherDegree)
@@ -45,8 +48,8 @@ Polynomial Polynomial::operator+(const Polynomial& right) const
 	// Add corresponding coefficients.
 	for (int i = 0; i <= higherDegree; i++)
 	{
-		int leftCoefficent = 0;
-		int rightCoefficient = 0;
+		float leftCoefficent = 0;
+		float rightCoefficient = 0;
 
 		if (i <= GetDegree())
 			leftCoefficent = coefficients[i];
@@ -69,7 +72,7 @@ Polynomial Polynomial::operator+(const Polynomial& right) const
 // Get the additive inverse of this polynomial. Aka, just multiply it by -1.
 Polynomial Polynomial::operator-() const
 {
-	std::vector<int> newCoefficients;
+	std::vector<float> newCoefficients;
 
 	for (int i = 0; i < GetDegree(); i++)
 	{
@@ -86,7 +89,7 @@ Polynomial Polynomial::operator-(const Polynomial& right) const
 
 Polynomial Polynomial::operator*(const Polynomial& right) const
 {
-	std::vector<int> newCoefficients;
+	std::vector<float> newCoefficients;
 
 	int maximumNewDegree = GetDegree() + right.GetDegree();
 
@@ -98,8 +101,8 @@ Polynomial Polynomial::operator*(const Polynomial& right) const
 		
 		for (int j = i; j >= 0; j--)
 		{
-			int leftCoefficent = 0;
-			int rightCoefficient = 0;
+			float leftCoefficent = 0;
+			float rightCoefficient = 0;
 
 			if (i <= GetDegree())
 				leftCoefficent = coefficients[i];
@@ -176,7 +179,7 @@ bool Polynomial::operator==(const Polynomial& right) const
 
 	for (int i = 0; i < GetDegree(); i++)
 	{
-		if (coefficients[i] != right.coefficients[i])
+		if (std::abs(coefficients[i] - right.coefficients[i]) < EPSILON)
 			return false;
 	}
 
@@ -193,7 +196,7 @@ int Polynomial::GetDegree() const
 	return coefficients.size() - 1;
 }
 
-std::string Polynomial::ToString()
+std::string Polynomial::ToString() const
 {
 	std::string displayStr;
 
@@ -211,10 +214,16 @@ std::string Polynomial::ToString()
 		}
 		else if (i == 1)
 		{
-			displayStr += std::to_string(coefficients[i]) + "x";
+			if(coefficients[i] == 1)
+				displayStr += "x";
+			else
+				displayStr += std::to_string(coefficients[i]) + "x";
 		}
 		else
-			displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
+			if (coefficients[i] == 1)
+				displayStr += "x";
+			else
+				displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
 	}
 
 	return displayStr;

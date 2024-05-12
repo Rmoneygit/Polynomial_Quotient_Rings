@@ -23,14 +23,14 @@ struct PolynomialHash
 
         for (int i = 1; i < p.coefficients.size(); i++)
         {
-            h = h ^ std::hash<int>()(p.coefficients[i]);
+            h = h ^ std::hash<float>()(p.coefficients[i]);
         }
 
         return h;
     }
 };
 
-void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff);
+void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, float minCoeff, float maxCoeff);
 
 int main()
 {
@@ -40,7 +40,7 @@ int main()
     std::getline(std::cin, inputtedModulus);
 
     // The goal here is to parse a string which is a list of integers seperated by spaces.
-    std::vector<int> coefficients;
+    std::vector<float> coefficients;
     for (int i = 0; i < inputtedModulus.size(); i++)
     {
         std::string substr;
@@ -60,7 +60,7 @@ int main()
 
         if (!substr.empty())
         {
-            int coeff = std::stoi(substr);
+            int coeff = std::stof(substr);
             coefficients.push_back(coeff);
         }
     }
@@ -69,10 +69,8 @@ int main()
     std::reverse(coefficients.begin(), coefficients.end());
     Polynomial mod(coefficients);
 
-    int maxCoeff = 5;
-
     std::unordered_set<Polynomial, PolynomialHash> polynomials;
-    generatePolynomialSet(mod.GetDegree(), polynomials, 0, 3);
+    generatePolynomialSet(mod.GetDegree(), polynomials, 0, 2);
 
     for (Polynomial p : polynomials)
     {
@@ -93,7 +91,7 @@ bool isDigit(char c)
     return false;
 }
 
-void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff)
+void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, float minCoeff, float maxCoeff)
 {
     if (degree == 0)
     {
@@ -111,7 +109,7 @@ void generatePolynomialSet(int degree, std::unordered_set<Polynomial, Polynomial
     for (int i = minCoeff; i <= maxCoeff; ++i)
     {   
         // Create a single-term polynomial like 2x^2
-        std::vector<int> coeffs;
+        std::vector<float> coeffs;
         for (int j = 0; j <= degree; ++j)
         {
             if (j == degree)
