@@ -38,3 +38,18 @@ class Polynomial
 		// This has the advantage that the nth number in the vector is the coefficient of x^n.
 		std::vector<float> coefficients;
 };
+
+struct PolynomialHash
+{
+	size_t operator()(const Polynomial& p) const
+	{
+		size_t h = p.coefficients[0];
+
+		for (int i = 1; i < p.coefficients.size(); i++)
+		{
+			h = h ^ std::hash<float>()(p.coefficients[i]);
+		}
+
+		return h;
+	}
+};

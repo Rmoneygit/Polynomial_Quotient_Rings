@@ -14,22 +14,6 @@
 
 const std::string digits = "0123456789";
 bool isDigit(char c);
-
-struct PolynomialHash
-{
-    size_t operator()(const Polynomial& p) const
-    {
-        size_t h = p.coefficients[0];
-
-        for (int i = 1; i < p.coefficients.size(); i++)
-        {
-            h = h ^ std::hash<float>()(p.coefficients[i]);
-        }
-
-        return h;
-    }
-};
-
 void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, float minCoeff, float maxCoeff);
 
 int main()

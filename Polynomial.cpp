@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include <stdlib.h>
+#include <sstream>
 
 #include "Polynomial.h"
 
@@ -198,33 +199,40 @@ int Polynomial::GetDegree() const
 
 std::string Polynomial::ToString() const
 {
-	std::string displayStr;
+	std::stringstream displayStr;
 
 	for (int i = GetDegree(); i >= 0; i--)
 	{
-		if (coefficients[i] == 0 && GetDegree() != 0)
+		float coeff = coefficients[i];
+		int precision = 2;
+		
+		if (coeff == 0 && GetDegree() != 0)
 			continue;
 
+		// If the coefficient is close enough to being an integer, don't show any decimal points
+		if (std::abs(roundf(coeff) - coeff) < EPSILON)
+			precision = 0;
+
 		if(i != GetDegree())
-			displayStr += " + ";
+			displayStr << " + ";
 
 		if (i == 0)
 		{	
-			displayStr += std::to_string(coefficients[i]);
+			displayStr << std::setprecision(precision) << coeff;
 		}
 		else if (i == 1)
 		{
 			if(coefficients[i] == 1)
-				displayStr += "x";
+				displayStr << "x";
 			else
-				displayStr += std::to_string(coefficients[i]) + "x";
+				displayStr << std::setprecision(precision) << coeff << "x";
 		}
 		else
 			if (coefficients[i] == 1)
-				displayStr += "x";
+				displayStr << "x";
 			else
-				displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
+				displayStr << std::setprecision(precision) << coeff << "x^" << std::to_string(i);
 	}
 
-	return displayStr;
+	return displayStr.str();
 }
