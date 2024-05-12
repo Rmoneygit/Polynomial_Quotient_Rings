@@ -4,7 +4,6 @@
 // Purpose: Class which represents a polynomial
 
 #include <iomanip>
-#include <sstream>
 #include <stdexcept>
 
 #include "Polynomial.h"
@@ -19,7 +18,7 @@ Polynomial::Polynomial(int a)
 	coefficients.push_back(a);
 }
 
-Polynomial::Polynomial(const std::vector<float>& values)
+Polynomial::Polynomial(const std::vector<int>& values)
 {
 	for (int val : values)
 	{
@@ -35,9 +34,9 @@ Polynomial::~Polynomial()
 
 }
 
-Polynomial Polynomial::operator+(Polynomial right)
+Polynomial Polynomial::operator+(const Polynomial& right) const
 {
-	std::vector<float> newCoefficients;
+	std::vector<int> newCoefficients;
 
 	int higherDegree = GetDegree();
 	if (right.GetDegree() > higherDegree)
@@ -59,7 +58,7 @@ Polynomial Polynomial::operator+(Polynomial right)
 	}
 
 	// Remove zeroes from the end of the coefficient list
-	for (int i = newCoefficients.size() - 1; i >= 0;)
+	for (int i = newCoefficients.size() - 1; i > 0;)
 	{
 		if (newCoefficients[i] == 0)
 			newCoefficients.pop_back();
@@ -69,9 +68,9 @@ Polynomial Polynomial::operator+(Polynomial right)
 }
 
 // Get the additive inverse of this polynomial. Aka, just multiply it by -1.
-Polynomial Polynomial::operator-()
+Polynomial Polynomial::operator-() const
 {
-	std::vector<float> newCoefficients;
+	std::vector<int> newCoefficients;
 
 	for (int i = 0; i < GetDegree(); i++)
 	{
@@ -81,14 +80,14 @@ Polynomial Polynomial::operator-()
 	return Polynomial(newCoefficients);
 }
 
-Polynomial Polynomial::operator-(Polynomial right)
+Polynomial Polynomial::operator-(const Polynomial& right) const
 {
 	return this->operator+(-right);
 }
 
-Polynomial Polynomial::operator*(Polynomial right)
+Polynomial Polynomial::operator*(const Polynomial& right) const
 {
-	std::vector<float> newCoefficients;
+	std::vector<int> newCoefficients;
 
 	int maximumNewDegree = GetDegree() + right.GetDegree();
 
@@ -125,7 +124,7 @@ Polynomial Polynomial::operator*(Polynomial right)
 	return Polynomial(newCoefficients);
 }
 
-Polynomial Polynomial::operator/(Polynomial divisor)
+Polynomial Polynomial::operator/(const Polynomial& divisor) const
 {
 	if (divisor == Polynomial(0))
 	{
@@ -148,7 +147,7 @@ Polynomial Polynomial::operator/(Polynomial divisor)
 
 // This operator should give us the least residue modulo "mod"
 // For polynomial rings over a field, this happens to be the remainder upon division by the modulus.
-Polynomial Polynomial::operator%(Polynomial mod)
+Polynomial Polynomial::operator%(const Polynomial& mod) const
 {
 	if (mod == Polynomial(0))
 	{
@@ -172,7 +171,7 @@ Polynomial Polynomial::operator%(Polynomial mod)
 }
 
 // Two polynomials are equal if every corresponding coefficient is equal.
-bool Polynomial::operator==(Polynomial right)
+bool Polynomial::operator==(const Polynomial& right) const
 {
 	if (GetDegree() != right.GetDegree())
 		return false;
@@ -186,39 +185,39 @@ bool Polynomial::operator==(Polynomial right)
 	return true;
 }
 
-bool Polynomial::operator!=(Polynomial right)
+bool Polynomial::operator!=(Polynomial right) const
 {
 	return !(this->operator==(right));
 }
 
-int Polynomial::GetDegree()
+int Polynomial::GetDegree() const
 {
 	return coefficients.size() - 1;
 }
 
 std::string Polynomial::ToString()
 {
-	std::stringstream stream;
+	std::string displayStr;
 
 	for (int i = GetDegree(); i >= 0; i--)
 	{
-		if (coefficients[i] == 0)
+		if (coefficients[i] == 0 && GetDegree() != 0)
 			continue;
 
 		if(i != GetDegree())
-			stream << " + ";
+			displayStr += " + ";
 
 		if (i == 0)
 		{	
-			stream << std::fixed << std::setprecision(2) << coefficients[i];
+			displayStr += std::to_string(coefficients[i]);
 		}
 		else if (i == 1)
 		{
-			stream << std::fixed << std::setprecision(2) << coefficients[i] << "x";
+			displayStr += std::to_string(coefficients[i]) + "x";
 		}
 		else
-			stream << std::fixed << std::setprecision(2) << coefficients[i] << "x^" << i;
+			displayStr += std::to_string(coefficients[i]) + "x^" + std::to_string(i);
 	}
 
-	return stream.str();
+	return displayStr;
 }

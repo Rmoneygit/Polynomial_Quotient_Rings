@@ -10,18 +10,36 @@
 #include <map>
 #include "Polynomial.h"
 #include <vector>
+#include <unordered_set>
 
 const std::string digits = "0123456789";
 bool isDigit(char c);
+void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff);
+
+struct PolynomialHash
+{
+    size_t operator()(const Polynomial& p) const
+    {
+        size_t h;
+        
+        for (int i = 0; i < p.coefficients.size(); i++)
+        {
+            h = h ^ std::hash<int>()(p.coefficients[i]);
+        }
+
+        return h;
+    }
+};
 
 int main()
 {
     std::string inputtedModulus;
+    std::cout << "We will assume the field of coefficient is the real numbers.\n";
     std::cout << "Enter a polynomial modulus. Type it like this: \"3 0 2 3 0\" represents the polynomial 3x^4 + 2x^2 + 3x.\n";
     std::getline(std::cin, inputtedModulus);
 
-    // The goal here is to parse a string which is a list of floats seperated by spaces.
-    std::vector<float> coefficients;
+    // The goal here is to parse a string which is a list of integers seperated by spaces.
+    std::vector<int> coefficients;
     for (int i = 0; i < inputtedModulus.size(); i++)
     {
         std::string substr;
@@ -41,7 +59,7 @@ int main()
 
         if (!substr.empty())
         {
-            float coeff = std::stof(substr);
+            int coeff = std::stoi(substr);
             coefficients.push_back(coeff);
         }
     }
@@ -50,7 +68,15 @@ int main()
     std::reverse(coefficients.begin(), coefficients.end());
     Polynomial mod(coefficients);
 
-    std::cout << mod.ToString();
+    int maxCoeff = 5;
+
+    std::unordered_set<Polynomial, PolynomialHash> polynomials;
+    generatePolynomialSet(mod.GetDegree(), polynomials, 0, 3);
+
+    for (Polynomial p : polynomials)
+    {
+        std::cout << p.ToString() << std::endl;
+    }
 
     return 0;
 }
@@ -64,4 +90,42 @@ bool isDigit(char c)
     }
 
     return false;
+}
+
+void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff)
+{
+    if (degree == 0)
+    {
+        for (int i = minCoeff; i <= maxCoeff; ++i)
+        {
+            polynomials.insert(Polynomial({ i }));
+        }
+
+        return;
+    }
+
+    std::unordered_set<Polynomial, PolynomialHash> lowerDegreePolynomials;
+    generatePolynomialSet(degree - 1, lowerDegreePolynomials, minCoeff, maxCoeff);
+
+    polynomials.merge(lowerDegreePolynomials);
+
+    for (int i = minCoeff; i <= maxCoeff; ++i)
+    {   
+        // Create a single-term polynomial like 2x^2
+        std::vector<int> coeffs;
+        for (int j = 0; j <= degree; ++j)
+        {
+            if (j == degree)
+                coeffs.push_back(i);
+            else
+                coeffs.push_back(0);
+        }
+
+        Polynomial p(coeffs);
+        
+        for (Polynomial q : lowerDegreePolynomials)
+        {
+            polynomials.insert(p + q);
+        }
+    }
 }

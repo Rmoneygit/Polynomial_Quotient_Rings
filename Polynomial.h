@@ -12,21 +12,23 @@ class Polynomial
 	public:
 		Polynomial();
 		Polynomial(int a);
-		Polynomial(const std::vector<float>& values);
+		Polynomial(const std::vector<int>& values);
 		~Polynomial();
 		
-		Polynomial operator+(Polynomial ref);
-		Polynomial operator-(Polynomial ref);
-		Polynomial operator*(Polynomial ref);
-		Polynomial operator/(Polynomial ref);
-		Polynomial operator%(Polynomial ref);
-		Polynomial operator-();
-		bool operator==(Polynomial ref);
-		bool operator!=(Polynomial ref);
+		Polynomial operator+(const Polynomial& ref) const;
+		Polynomial operator-(const Polynomial& ref) const;
+		Polynomial operator*(const Polynomial& ref) const;
+		Polynomial operator/(const Polynomial& ref) const;
+		Polynomial operator%(const Polynomial& ref) const;
+		Polynomial operator-() const;
+		bool operator==(const Polynomial& ref) const;
+		bool operator!=(Polynomial ref) const;
 
-		int GetDegree();
+		int GetDegree() const;
 
 		std::string ToString();
+
+		friend struct PolynomialHash;
 	private:
 		// Coefficient are stored backwards from how they are written on paper. For instance
 		// 
@@ -34,5 +36,5 @@ class Polynomial
 		// 
 		// would be stored as [2, 8, 2, 5]. 
 		// This has the advantage that the nth number in the vector is the coefficient of x^n.
-		std::vector<float> coefficients;
+		std::vector<int> coefficients;
 };
