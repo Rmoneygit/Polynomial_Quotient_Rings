@@ -17,7 +17,7 @@ Polynomial::Polynomial()
 	coefficients.push_back(0);
 }
 
-Polynomial::Polynomial(int a)
+Polynomial::Polynomial(float a)
 {
 	coefficients.push_back(a);
 }
@@ -272,8 +272,8 @@ std::string Polynomial::ToString() const
 				displayStr << std::setprecision(precision) << coeff << "x";
 		}
 		else
-			if (coefficients[i] == 1)
-				displayStr << "x";
+			if (coeff == 1)
+				displayStr << "x^" << std::to_string(i);
 			else
 				displayStr << std::setprecision(precision) << coeff << "x^" << std::to_string(i);
 	}

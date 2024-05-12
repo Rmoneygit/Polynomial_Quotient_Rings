@@ -13,47 +13,36 @@
 
 const std::string digits = "0123456789";
 bool isDigit(char c);
-void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff);
+void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff, float step);
+void parseListOfRealNumbers(std::string str, std::vector<float>& numbers);
 
 int main()
 {
     std::string inputtedModulus;
-    std::cout << "We will assume the field of coefficient is the real numbers.\n";
+    std::cout << "We will assume the field of coefficients is the real numbers.\n";
     std::cout << "Enter a polynomial modulus. Type it like this: \"3 0 2 3 0\" represents the polynomial 3x^4 + 2x^2 + 3x.\n";
     std::getline(std::cin, inputtedModulus);
 
-    // The goal here is to parse a string which is a list of integers seperated by spaces.
     std::vector<float> coefficients;
-    for (int i = 0; i < inputtedModulus.size(); i++)
-    {
-        std::string substr;
+    parseListOfRealNumbers(inputtedModulus, coefficients);
 
-        while (i < inputtedModulus.size())
-        {
-            if (inputtedModulus[i] == ' ')
-            {
-                break;
-            }
-            else if(isDigit(inputtedModulus[i]) || inputtedModulus[i] == '.')
-            {
-                substr += inputtedModulus[i];
-                ++i;
-            }
-        }
+    std::string inputtedMinMaxAndStep;
+    std::cout << "Enter the minimum coefficient, maximum coefficient, and step value seperated by spaces.\n";
+    std::getline(std::cin, inputtedMinMaxAndStep);
 
-        if (!substr.empty())
-        {
-            int coeff = std::stof(substr);
-            coefficients.push_back(coeff);
-        }
-    }
+    std::vector<float> minMaxAndStep;
+    parseListOfRealNumbers(inputtedMinMaxAndStep, minMaxAndStep);
 
     // I want to enter the coefficients in the same order that they'd be written on paper, but ultimately store them reversed.
     std::reverse(coefficients.begin(), coefficients.end());
     Polynomial mod(coefficients);
 
     std::set<Polynomial> polynomials;
-    generatePolynomialSet(mod.GetDegree(), polynomials, 0, 2);
+
+    if (minMaxAndStep.size() == 3)
+        generatePolynomialSet(mod.GetDegree(), polynomials, minMaxAndStep[0], minMaxAndStep[1], minMaxAndStep[2]);
+    else
+        std::cout << "Expected 3 values to be inputted, instead received " << minMaxAndStep.size() << std::endl;
 
     for (Polynomial p : polynomials)
     {
@@ -74,22 +63,34 @@ bool isDigit(char c)
     return false;
 }
 
-void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff)
+void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float minCoeff, float maxCoeff, float step)
 {
+    if (minCoeff > maxCoeff)
+    {
+        std::cout << "The minimum coefficient must be smaller than the maximum coefficient!\n";
+        return;
+    }
+
+    if (step < 0)
+    {
+        std::cout << "The step value must be a positive real number!\n";
+        return;
+    }
+    
     if (degree == 0)
     {
-        for (int i = minCoeff; i <= maxCoeff; ++i)
+        for (float i = minCoeff; i <= maxCoeff; i = i + step)
         {
-            polynomials.insert(Polynomial({ i }));
+            polynomials.insert(Polynomial(i));
         }
 
         return;
     }
 
     std::set<Polynomial> lowerDegreePolynomials;
-    generatePolynomialSet(degree - 1, lowerDegreePolynomials, minCoeff, maxCoeff);
+    generatePolynomialSet(degree - 1, lowerDegreePolynomials, minCoeff, maxCoeff, step);
 
-    for (int i = minCoeff; i <= maxCoeff; ++i)
+    for (float i = minCoeff; i <= maxCoeff; i = i + step)
     {   
         // Create a single-term polynomial like 2x^2
         std::vector<float> coeffs;
@@ -110,4 +111,32 @@ void generatePolynomialSet(int degree, std::set<Polynomial>& polynomials, float 
     }
 
     polynomials.merge(lowerDegreePolynomials);
+}
+
+// The goal here is to parse a string which is a list of real numbers seperated by spaces.
+void parseListOfRealNumbers(std::string str, std::vector<float>& numbers)
+{
+    for (int i = 0; i < str.size(); i++)
+    {
+        std::string substr;
+
+        while (i < str.size())
+        {
+            if (str[i] == ' ')
+            {
+                break;
+            }
+            else if (isDigit(str[i]) || str[i] == '.')
+            {
+                substr += str[i];
+                ++i;
+            }
+        }
+
+        if (!substr.empty())
+        {
+            float coeff = std::stof(substr);
+            numbers.push_back(coeff);
+        }
+    }
 }

@@ -11,7 +11,7 @@ class Polynomial
 {
 	public:
 		Polynomial();
-		Polynomial(int a);
+		Polynomial(float a);
 		Polynomial(const std::vector<float>& values);
 		~Polynomial();
 		
