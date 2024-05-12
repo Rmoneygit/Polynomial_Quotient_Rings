@@ -14,15 +14,14 @@
 
 const std::string digits = "0123456789";
 bool isDigit(char c);
-void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff);
 
 struct PolynomialHash
 {
     size_t operator()(const Polynomial& p) const
     {
-        size_t h;
-        
-        for (int i = 0; i < p.coefficients.size(); i++)
+        size_t h = p.coefficients[0];
+
+        for (int i = 1; i < p.coefficients.size(); i++)
         {
             h = h ^ std::hash<int>()(p.coefficients[i]);
         }
@@ -30,6 +29,8 @@ struct PolynomialHash
         return h;
     }
 };
+
+void generatePolynomialSet(int degree, std::unordered_set<Polynomial, PolynomialHash>& polynomials, int minCoeff, int maxCoeff);
 
 int main()
 {
@@ -107,8 +108,6 @@ void generatePolynomialSet(int degree, std::unordered_set<Polynomial, Polynomial
     std::unordered_set<Polynomial, PolynomialHash> lowerDegreePolynomials;
     generatePolynomialSet(degree - 1, lowerDegreePolynomials, minCoeff, maxCoeff);
 
-    polynomials.merge(lowerDegreePolynomials);
-
     for (int i = minCoeff; i <= maxCoeff; ++i)
     {   
         // Create a single-term polynomial like 2x^2
@@ -128,4 +127,6 @@ void generatePolynomialSet(int degree, std::unordered_set<Polynomial, Polynomial
             polynomials.insert(p + q);
         }
     }
+
+    polynomials.merge(lowerDegreePolynomials);
 }

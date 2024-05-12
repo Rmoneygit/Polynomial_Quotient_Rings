@@ -43,25 +43,24 @@ Polynomial Polynomial::operator+(const Polynomial& right) const
 		higherDegree = right.GetDegree();
 
 	// Add corresponding coefficients.
-	for (int i = 0; i < higherDegree; i++)
+	for (int i = 0; i <= higherDegree; i++)
 	{
 		int leftCoefficent = 0;
 		int rightCoefficient = 0;
 
-		if (i < GetDegree())
+		if (i <= GetDegree())
 			leftCoefficent = coefficients[i];
 
-		if (i < right.GetDegree())
+		if (i <= right.GetDegree())
 			rightCoefficient = right.coefficients[i];
 
 		newCoefficients.push_back(leftCoefficent + rightCoefficient);
 	}
 
 	// Remove zeroes from the end of the coefficient list
-	for (int i = newCoefficients.size() - 1; i > 0;)
+	while (newCoefficients.size() > 1 && newCoefficients.back() == 0)
 	{
-		if (newCoefficients[i] == 0)
-			newCoefficients.pop_back();
+		newCoefficients.pop_back();
 	}
 
 	return Polynomial(newCoefficients);
@@ -102,10 +101,10 @@ Polynomial Polynomial::operator*(const Polynomial& right) const
 			int leftCoefficent = 0;
 			int rightCoefficient = 0;
 
-			if (i < GetDegree())
+			if (i <= GetDegree())
 				leftCoefficent = coefficients[i];
 
-			if (i < right.GetDegree())
+			if (i <= right.GetDegree())
 				rightCoefficient = right.coefficients[j];
 			
 			ithCoeff += leftCoefficent * rightCoefficient;
@@ -115,10 +114,9 @@ Polynomial Polynomial::operator*(const Polynomial& right) const
 	}
 
 	// Remove zeroes from the end of the coefficient list
-	for (int i = newCoefficients.size() - 1; i >= 0;)
+	while (newCoefficients.size() > 1 && newCoefficients.back() == 0)
 	{
-		if (newCoefficients[i] == 0)
-			newCoefficients.pop_back();
+		newCoefficients.pop_back();
 	}
 
 	return Polynomial(newCoefficients);
